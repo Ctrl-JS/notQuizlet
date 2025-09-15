@@ -5,12 +5,12 @@
   "description": "Flashcard-studieapp",
   "icons": [
     {
-      "src": "/img/icon-192.png",
+      "src": "/notQuizlet/img/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/img/icon-512.png",
+      "src": "/notQuizlet/img/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -24,19 +24,19 @@
   "shortcuts": [
     {
       "name": "Importeren",
-      "url": "/import.html",
+      "url": "https://Ctrl-JS.github.io/notQuizlet/import.html",
       "description": "Set importeren"
     }
   ],
   "file_handlers": [
     {
-      "action": "/index.html?view=pwa",
+      "action": "https://Ctrl-JS.github.io/notQuizlet/index.html?view=pwa",
       "accept": {
         "application/json": [".json", ".quiz"]
       },
       "icons": [
         {
-          "src": "/img/icon-192.png",
+          "src": "/notQuizlet/img/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
