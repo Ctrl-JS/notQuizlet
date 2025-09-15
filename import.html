@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Set importeren</title>
+  <link rel="stylesheet" href="css/baseline.css">
+  <link rel="stylesheet" href="css/import.css">
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="link">Home</a>
+  </div>
+  <div id="importArea">
+    <span>Gegevens invoeren</span>
+    <button class="expandButton" onclick="toggleExp(this.parentElement)"></button>
+    <div class="input-box" style="min-height:4.125rem">
+      <input type="text" id="nameInput" required autocomplete="off">
+      <label for="nameInput">Titel</label>
+    </div>
+    <div class="input-box" style="min-height:4.125rem">
+      <input type="text" id="termLInput" required autocomplete="off">
+      <label for="termLInput">Taal voor termen</label>
+    </div>
+    <div class="input-box" style="min-height:4.125rem">
+      <input type="text" id="defLInput" required autocomplete="off">
+      <label for="defLInput">Taal voor definities</label>
+    </div>
+    <div id="multiswitchbox">
+      <span>Tussen kaarten:</span>
+      <div class="multistateSwitch">
+        <input type="radio" id="dividerOption1" name="dividerOption" value="&#10" checked>
+        <label for="dividerOption1">1x ↵</label>
+        <input type="radio" id="dividerOption2" name="dividerOption" value="&#10&#10&#10&#10">
+        <label for="dividerOption2">4x ↵</label>
+      </div>
+      <span>Tussen term en definitie:</span>
+      <div class="multistateSwitch">
+        <input type="radio" id="splitterOption1" name="splitterOption" value=", " checked>
+        <label for="splitterOption1">", "</label>
+        <input type="radio" id="splitterOption2" name="splitterOption" value=": ">
+        <label for="splitterOption2">": "</label>
+        <input type="radio" id="splitterOption3" name="splitterOption" value="&#10">
+        <label for="splitterOption3">1x ↵</label>
+        <input type="radio" id="splitterOption4" name="splitterOption" value="&#9">
+        <label for="splitterOption4">1x ⭾</label>
+      </div>
+    </div>
+    <label for="textArea">Inhoud plakken (ctrl+V):</label>
+    <textarea id="textArea"></textarea>
+  </div>
+  <div id="previewArea">
+    <button class="expandButton" onclick="toggleExp(this.parentElement)"></button>
+    <span>Preview:</span>
+    <span id="previewHolder"></span>
+    <button class="default-button" onclick="saveFile()">Downloaden</button>
+  </div>
+  <div id="iframeArea">
+    <span>Quizlet.com</span>
+    <button class="expandButton" onclick="toggleExp(this.parentElement)"></button>
+    <iframe id="iframe"></iframe>
+  </div>
+  <script src="js/importer.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "name": "quizExample",
+  "date": "10/7/2025",
+  "termL": "Nederlands",
+  "defL": "Letters",
+  "tags": ["tag1", "tag2"],
+  "cards": [
+    {
+      "term": "1",
+      "def": "a",
+      "star": true,
+      "hint": "Eerste letter",
+      "img": "/path/"
+    },
+    {
+      "term": "2",
+      "def": "b"
+    },
+    {
+      "term": "derde letter",
+      "def": "c"
+    },
+    {
+      "term": "letter 4",
+      "def": "d"
+    },
+    {
+      "term": "5",
+      "def": "e"
+    },
+    {
+      "term": "6",
+      "def": "f"
+    }
+  ],
+  "version": 1
+}

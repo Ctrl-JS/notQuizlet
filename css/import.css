@@ -1,0 +1,69 @@
+html{
+  height: 100%;
+}
+#iframeArea, #importArea, #previewArea{
+  border: 1px solid var(--outline);
+  margin: 2rem;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+iframe{
+  margin-top: 2rem;
+  border: none;
+  height: 100%;
+  border-radius: 2rem;
+}
+.expanded{
+  height: 70%!important;
+}
+#textArea, #previewHolder{
+  background-color: var(--bg-var);
+  color: var(--on-bg);
+  border: none;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  resize: none;
+  font-size: 1rem;
+  margin: 1rem 0;
+  height: 100%;
+  white-space: break-spaces;
+  font-family: monospace;
+  overflow: scroll;
+}
+#textArea:focus-visible{
+  outline: none;
+}
+.expandButton{
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  border: none;
+  background-color: var(--secondary-color);
+  color: var(--on-secondary-color);
+  border-radius: 1em;
+  padding: 0.5em 1em;
+  z-index: 9;
+}
+.expandButton::before{
+  content: "Uitklappen";
+}
+.expanded > .expandButton::before{
+  content: "Inklappen";
+}
+.header{
+  z-index: 10;
+}
+#multiswitchbox{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 1rem;
+}
+#multiswitchbox > span, .multistateSwitch{
+  margin-right: 2rem;
+}

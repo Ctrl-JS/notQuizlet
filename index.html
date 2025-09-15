@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="nl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unshittified Quizlet</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/compress.css">
+  <meta name="description" content="Unshittified Quizlet">
+
+  <link rel="icon" href="/img/icon.svg" sizes="any">
+  <link rel="icon" href="/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/icon.svg">
+
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#4285f4">
+</head>
+
+<body>
+  <header class="bigTitle-wrapper">
+    <div class="bigTitle"></div>
+    <button id="settingsButton" class="link">Instellingen</button>
+  </header>
+  <button class="FAB" id="editButton" onclick="toggleEdit()" style="display: none">
+      <div class="FAB-symbol edit"></div>
+      <div class="FAB-text">Bewerken</div>
+  </button>
+  <div id="home" class="appBody">
+    <div style="display: flex; flex-direction: column; margin-left: 32px; width: calc(100% - 64px);">
+      <span id="nameHolder"></span>
+      <div id="tagHolder"></div>
+      <h4 id="fastModesTitle" style="display: none">Leermodi</h4>
+      <div class="button-cardHolder" id="fastModes" style="display: none">
+        <button class="button-card" onclick='startQuiz(card_mode)'>
+          <span class="button-card-title">Kaarten</span>
+          <span class="button-card-text">Leren aan de hand van flashcards</span>
+          <div class="button-card-icon cards"></div>
+        </button>
+        <button class="button-card" onclick='startQuiz(write_mode)'>
+          <span class="button-card-title">Schrijven</span>
+          <span class="button-card-text">Leren aan de hand van schrijven</span>
+          <div class="button-card-icon write"></div>
+        </button>
+        <button class="button-card" onclick='startQuiz(study_mode)'>
+          <span class="button-card-title">Studeren</span>
+          <span class="button-card-text">Leren met meerkeuze en schrijven</span>
+          <div class="button-card-icon quiz"></div>
+        </button>
+        <button class="button-card" onclick='modePrompt()'>
+          <span class="button-card-title">Aangepaste modus</span>
+          <span class="button-card-text">Stel een aangepaste leermodus in</span>
+          <div class="button-card-icon pref"></div>
+        </button>
+      </div>
+      <h4 id="cardHolderTitle" style="display: none">Kaarten in deze set</h4>
+      <div id="cardHolder"></div>
+      <h4>Snelle Acties</h4>
+      <div class="button-cardHolder">
+        <label class="button-card">
+          <input style="display: none" id="upload-btn" type="file" accept=".quiz, .json"/>
+          <span class="button-card-title">Upload</span>
+          <span class="button-card-text">Laad een quiz-bestand in</span>
+          <div class="button-card-icon upload"></div>
+        </label>
+        <button class="button-card" onclick="newQuiz()">
+          <span class="button-card-title">Nieuwe set</span>
+          <span class="button-card-text">Maak een nieuwe set aan</span>
+          <div class="button-card-icon add"></div>
+        </button>
+        <button class="button-card" onclick="window.location = 'import.html?s=f'">
+          <span class="button-card-title">Importeren</span>
+          <span class="button-card-text">Importeer een set uit documenten of websites</span>
+          <div class="button-card-icon import"></div>
+        </button>
+        <button class="button-card" onclick="window.location = 'import.html?s=q'">
+          <span class="button-card-title">Importeren uit Quizlet</span>
+          <span class="button-card-text">Importeer een set van quizlet.com</span>
+          <div class="button-card-icon quizlet-logo"></div>
+        </button>
+      </div>
+      <h4>Meer Tools</h4>
+      <div class="button-cardHolder">
+        <button class="button-card" onclick="if (quiz.cards) {saveFile()}">
+          <span class="button-card-title">Exporteren</span>
+          <span class="button-card-text">Set opslaan naar lokaal bestand</span>
+          <div class="button-card-icon download"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="learner" class="appBody" style="display: none">
+    <button onclick="hide(); bottomPrompt('Er is een oefensessie gepauzeerd. Leren hervatten?', resume, 'Hervatten')" class="hideButton" title="Oefensessie onderbreken">
+      <div class="hideIcon close"></div>
+    </button>
+    <button onclick="modePrompt(false)" class="hideButton prefButton" title="Leermodus aanpassen">
+      <div class="hideIcon pref"></div>
+    </button>
+    <div id="learnerContent" class="learnerContent">
+      <p id="learnerQuestion">Vraag</p>
+      <div class="input-box">
+        <input id="learnerInput" type="text" autocomplete="off" tabindex="0" spellcheck="false" required/>
+        <label id="learnerHint" for="learnerInput">Antwoord</label>
+        <button id="learnerButton" class="default-button" onclick="check()" title="Antwoord indienen">Antwoorden</button>
+      </div>
+    </div>
+    <div id="flashcardContent" class="learnerContent">
+      <div class="flashcard" tabindex="0" title="Klikken om om te draaien">Vraag</div>
+      <span>Omdraaien:</span><span style="font-family: monospace;margin-right: 1rem">␣ Spatiebalk</span>
+      <span>Volgende:</span><span style="font-family: monospace">↵ Enter</span>
+    </div>
+    <div id="chooserContent" class="learnerContent" tabindex="0">
+      <p id="chooserQuestion">Vraag</p>
+      <div class="chooserTable">
+        <button id="choose1" class="button-card chooser-button-card" onclick="choose(this)">
+          <span class="chooser-button-card-icon">1</span>
+          <span>Optie</span>
+        </button>
+        <button id="choose2" class="button-card chooser-button-card" onclick="choose(this)">
+          <span class="chooser-button-card-icon">2</span>
+          <span>Optie</span>
+        </button>
+        <button id="choose3" class="button-card chooser-button-card" onclick="choose(this)">
+          <span class="chooser-button-card-icon">3</span>
+          <span>Optie</span>
+        </button>
+        <button id="choose4" class="button-card chooser-button-card" onclick="choose(this)">
+          <span class="chooser-button-card-icon">4</span>
+          <span>Optie</span>
+        </button>
+      </div>
+    </div>
+    <progress id="progressBar" value="0" max="100"></progress>
+  </div>
+  <div id="settings" class="appBody" style="display: none">
+    <div class="column settingsColumn">
+      <button onclick="hide()" class="hideButton" style="position: relative;margin: 0;right: 0" title="Terug naar startscherm">
+        <div class="hideIcon back"></div>
+      </button>
+      <div class="settingRow">
+        <div class="column">
+          <h3 class="settingText">Animaties</h3>
+          <p class="settingText">Laat het scherm groen of rood oplichten wanneer een antwoord wordt beoordeeld. Laat flashcards visueel omdraaien.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="animateSwitch">
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+      <div class="settingRow">
+        <div class="column">
+          <h3 class="settingText">Info</h3>
+          <p class="settingText">Versie: 0.0.1</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="bottomPrompt" style="display: none">
+    <span></span>
+    <button class="default-button second-button" onclick="hideBottomPrompt()" style="margin-left:auto">Annuleren</button>
+    <button class="default-button">Ok</button>
+  </div>
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>
