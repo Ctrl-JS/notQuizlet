@@ -1,0 +1,48 @@
+{
+  "short_name": "notQuizlet",
+  "name": "Unshittified Quizlet",
+  "lang": "nl",
+  "description": "Flashcard-studieapp",
+  "icons": [
+    {
+      "src": "/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "https://Ctrl-JS.github.io/notQuizlet/index.html?view=pwa",
+  "scope": "https://Ctrl-JS.github.io/notQuizlet",
+  "display": "standalone",
+  "orientation": "landscape",
+  "theme_color": "#284777",
+  "background-color": "#284777",
+  "shortcuts": [
+    {
+      "name": "Importeren",
+      "url": "/import.html",
+      "description": "Set importeren"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/index.html?view=pwa",
+      "accept": {
+        "application/json": [".json", ".quiz"]
+      },
+      "icons": [
+        {
+          "src": "/img/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "multiple_clients"
+    }
+  ],
+  "handle_links": "preferred"
+}

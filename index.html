@@ -13,8 +13,8 @@
   <link rel="icon" href="/img/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/img/icon.svg">
 
-  <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#4285f4">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="##284777">
 </head>
 
 <body>
@@ -161,7 +161,11 @@
     <button class="default-button">Ok</button>
   </div>
   <script src="js/app.js"></script>
-
+  <script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('sw.js')
+    }
+  </script>
 </body>
 
 </html>
