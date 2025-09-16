@@ -1,4 +1,4 @@
-const VERSION = "0.0.2";
+const VERSION = "0.0.3";
 const CACHE_NAME = `quiz-cache-${VERSION}`;
 const APP_STATIC_RES = [
   "/notQuizlet/",
@@ -49,7 +49,7 @@ self.addEventListener('activate', function(event) {
           return caches.delete(key);
         }
       }));
-    }) 
+    })
   );
 });
 
