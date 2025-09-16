@@ -25,7 +25,14 @@
     {
       "name": "Importeren",
       "url": "https://Ctrl-JS.github.io/notQuizlet/import.html",
-      "description": "Set importeren"
+      "description": "Set importeren",
+      "icons": [
+        {
+          "src": "/notQuizlet/img/add.svg",
+          "sizes": "any",
+          "type": "image/svg"
+        }
+      ]
     }
   ],
   "file_handlers": [
@@ -41,7 +48,7 @@
           "type": "image/png"
         }
       ],
-      "launch_type": "multiple_clients"
+      "launch_type": "multiple-clients"
     }
   ],
   "handle_links": "preferred"

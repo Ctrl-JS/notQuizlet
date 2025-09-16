@@ -70,6 +70,17 @@ function JSONHandler(json) {
   document.getElementById('editButton').style.display = 'flex';
 }
 
+//launch from file
+if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
+  LaunchQueue.setConsumer((launchParams) => {
+    if (!launchParams.files.length) {
+      //pass
+    } else {
+      fileHandler(launchParams.files[0]);
+    }
+  })
+}
+
 document.getElementById("upload-btn").addEventListener("change", (event) => {
   fileHandler(event.target.files[0])
 });
@@ -503,7 +514,7 @@ function check() { //check answer
           todo[0] = subtractMistake(todo[0]);
         } else if (quiz_mode.mistakePosition === "shift") {
           if (todo.length < 11) {
-            todo.splice(-1, 0, todo.shift());
+            todo.splice(-1, 0, subtractMistake(todo.shift()));
           } else {
             const randIndex = getRandom(5, 10);
             todo.splice(randIndex, 0, subtractMistake(todo[0]));
@@ -527,12 +538,13 @@ function check() { //check answer
       }
       if (quiz_mode.repeatMistake === "1" || quiz_mode.repeatMistake === "net" || quiz_mode.repeatMistake === "streak") {
         if (quiz_mode.mistakePosition === "direct") {
+          todo[0] = addMistake(todo[0]);
           if (quiz_mode.writeOver) {
             todo.splice(1, 0, todo.shift())
           }
         } else if (quiz_mode.mistakePosition === "shift") {
           if (todo.length < 11) {
-            todo.splice(-1, 0, todo.shift());
+            todo.splice(-1, 0, addMistake(todo.shift()));
           } else {
             const randIndex = getRandom(5, 10);
             todo.splice(randIndex, 0, addMistake(todo[0]));
