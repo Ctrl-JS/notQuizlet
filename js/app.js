@@ -72,7 +72,7 @@ function JSONHandler(json) {
 
 //launch from file
 if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
-  LaunchQueue.setConsumer((launchParams) => {
+  launchQueue.setConsumer((launchParams) => {
     if (!launchParams.files.length) {
       //pass
     } else {
