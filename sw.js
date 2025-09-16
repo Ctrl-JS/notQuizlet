@@ -1,4 +1,4 @@
-const VERSION = "0.0.1";
+const VERSION = "0.0.2";
 const CACHE_NAME = `quiz-cache-${VERSION}`;
 const APP_STATIC_RES = [
   "/notQuizlet/",
@@ -30,51 +30,44 @@ const APP_STATIC_RES = [
   "/notQuizlet/img/write.svg",
 ]
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    (async () => {
-      const cache = await caches.open(CACHE_NAME);
-      cache.addAll(APP_STATIC_RES);
-    })(),
-  );
-});
-
-self.addEventListener("activate", (event) => {
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    (async () => {
-      const names = await caches.keys();
-      await Promise.all(
-        names.map((name) => {
-          if (name !== CACHE_NAME) {
-            return caches.delete(name);
-          }
-          return undefined;
-        }),
-      );
-      await clients.claim();
-    })(),
+    caches.open(CACHE_NAME)
+      .then(function (cache) {
+        console.log('Opened cache');
+        return cache.addAll(APP_STATIC_RES);
+      })
+  );
+  return self.skipWaiting();
+});
+
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(keyList) {
+      return Promise.all(keyList.map(function(key) {
+        if (key !== CACHE_NAME) {
+          return caches.delete(key);
+        }
+      }));
+    }) 
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  // when seeking an HTML page
-  if (event.request.mode === "navigate") {
-    // Return to the index.html page
-    event.respondWith(caches.match("/"));
-    return;
-  }
-
-  // For every other request type
+self.addEventListener('fetch', function(event) {
   event.respondWith(
-    (async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cachedResponse = await cache.match(event.request.url);
-      if (cachedResponse) {
-        // Return the cached response if it's available.
-        return cachedResponse;
-      }
-      // Respond with an HTTP 404 response status.
-      return new Response(null, { status: 404 });
-    })(),
+    caches.open(CACHE_NAME).then(function(cache){
+      return cache.match(event.request, {ignoreVary: true})
+        .then(function(response) {
+          if (response) {
+          console.log('SERVED FROM CACHE');
+            return response;
+          }
+          return fetch(event.request).then(function(response){
+              console.log('Response from network is:', response);
+              return response;
+          });
+        }
+      )
+    })
   );
 });
