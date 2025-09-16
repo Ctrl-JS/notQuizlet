@@ -8,11 +8,9 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/compress.css">
   <meta name="description" content="Unshittified Quizlet">
-
   <link rel="icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg" sizes="any">
   <link rel="icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg">
-
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#284777">
 </head>
@@ -162,8 +160,17 @@
   </div>
   <script src="js/app.js"></script>
   <script>
-    if (typeof navigator.serviceWorker !== 'undefined') {
-      navigator.serviceWorker.register('sw.js')
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").then(
+        (registration) => {
+          console.log("Service worker registration successful:", registration);
+        },
+        (error) => {
+          console.error(`Service worker registration failed: ${error}`);
+        },
+      );
+    } else {
+      console.error("Service workers are not supported.");
     }
   </script>
 </body>
