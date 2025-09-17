@@ -43,7 +43,7 @@ function JSONHandler(json) {
   document.getElementById('cardHolder').innerHTML = '';
   document.getElementById('tagHolder').innerHTML = '';
   document.getElementById('nameHolder').innerHTML = quiz.name;
-  [quiz.date || "?", quiz.termL || "?", quiz.defL || "?"].concat(quiz.tags || [])
+  [quiz.date || "?", quiz.termL || "?", quiz.defL || "?", quiz.cards.length + " kaarten"].concat(quiz.tags || [])
     .forEach(tag => {
       document.getElementById('tagHolder')
         .innerHTML += "<span class='tag'>" + tag + "</span>";
@@ -76,7 +76,8 @@ if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
     if (!launchParams.files.length) {
       //pass
     } else {
-      fileHandler(launchParams.files[0]);
+      console.log(launchParams.files[0]);
+      fileHandler(launchParams.files[0].getFile());
     }
   })
 }
@@ -126,11 +127,13 @@ function newQuiz() {
 }
 
 function saveFile(data=quiz) {
+  unsaved = false;
   const blob = new Blob([JSON.stringify(data, null, 0)], {type: 'application/json'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = data.name + '.quiz';
   link.click();
+
 }
 
 function addTag() {
@@ -373,7 +376,7 @@ function toggleEdit() {
     elem.toggleAttribute('contenteditable');
     if (editing) {
       if (elem.parentElement.dataset.index) {
-        quiz.cards[elem.parentElement.dataset.index][elem.dataset.type] = elem.innerHTML.trim();
+        quiz.cards[elem.parentElement.dataset.index][elem.dataset.type] = elem.textContent.trim();
       } else if (elem.id === 'nameHolder') {
         quiz.name = elem.textContent.trim();
       }
@@ -434,6 +437,7 @@ function generator() {
 
 function startQuiz(mode=quiz_mode) {
   quiz_mode = {...quiz_mode, ...mode};
+  if (editing) {toggleEdit();}
   if (modeReliabilityChecker()) {
     generator();
     show("learner");
@@ -645,22 +649,10 @@ function changes() {
   if (!unsaved) {
     unsaved = true;
     window.addEventListener('beforeunload', (e) => {
-      e.preventDefault();
-      bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', saveFile, "Downloaden")
+      if (unsaved) {
+        e.preventDefault();
+        bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', saveFile, "Downloaden")
+      }
     })
   }
 }
-//toPosition() implementeren
-//fix progressBar
-//todo fouten negeren
-//hints: handmatig & auto
-//todo afbeeldingen
-//direction per qType
-//3 niet-willekeurige opties in chooser
-//opmaak? innerText || textContent
-//gevoeligheid writeOver bijstellen
-//eigen leermodi opslaan
-//soft-settings (correctiemethoden): todoLijst behouden
-//aantal kaarten in set weergeven
-//prompt() vervangen in newQuiz()
-//logo

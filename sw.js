@@ -1,4 +1,4 @@
-const VERSION = "0.0.4";
+const VERSION = "0.0.5";
 const CACHE_NAME = `quiz-cache-${VERSION}`;
 const APP_STATIC_RES = [
   "/notQuizlet/",

@@ -168,7 +168,7 @@ span[contenteditable]:focus-visible{
   top: 5vw;
   z-index: 2;
   max-width: 90%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 .popup-title{
   font-size: large;
