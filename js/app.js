@@ -76,8 +76,8 @@ if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
     if (!launchParams.files.length) {
       //pass
     } else {
-      console.log(launchParams.files[0]);
-      fileHandler(launchParams.files[0].getFile());
+      const file = await launchParams.files[0].getFile();
+      fileHandler(file);
     }
   })
 }
