@@ -76,8 +76,7 @@ if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
     if (!launchParams.files.length) {
       //pass
     } else {
-      const file = await launchParams.files[0].getFile();
-      fileHandler(file);
+      launchParams.files[0].getFile().then((result) => {fileHandler(result)});
     }
   })
 }
@@ -651,7 +650,7 @@ function changes() {
     window.addEventListener('beforeunload', (e) => {
       if (unsaved) {
         e.preventDefault();
-        bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', saveFile, "Downloaden")
+        bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', saveFile(quiz), "Downloaden")
       }
     })
   }
