@@ -13,6 +13,7 @@ html{
   --light-hover: #53555a;
   transition: 0.3s;
   box-shadow: none; /*todo shadow?*/
+  scrollbar-color: var(--on-accent-color) var(--accent-color);
 }
 body{
   color: var(--on-bg);
@@ -234,6 +235,7 @@ input[type="number"]:invalid{
   margin: 0.25rem;
   padding: 1em 2em;
   transition: 0.3s;
+  white-space: pre;
 }
 .default-button:hover, .default-button:focus-visible{
   background: var(--accent-color) radial-gradient(circle, transparent 1%, var(--accent-color-active) 1%) center/15000%;
@@ -255,7 +257,7 @@ input[type="number"]:invalid{
   color: var(--on-secondary-color);
   background-size: 0;
 }
-#learnerQuestion, #chooserQuestion{
+#learnerQuestion, #chooserQuestion, #writeOverQuestion{
   font-size: xx-large;
   white-space: pre-wrap;
 }

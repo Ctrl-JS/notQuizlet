@@ -1,12 +1,66 @@
 {
-  "short_name": "notQuizlet",
-  "name": "notQuizlet",
-  "icons": [{
-    "src": "icon.svg",
-    "type": "image/svg",
-    "sizes": "192x192"
-  }],
-  "start_url": "/?utm_source=homescreen",
-  "background_color": "#4285f4",
-  "theme_color": "#4285f4"
+  "short_name": "nQ",
+  "name": "nQ-learner",
+  "lang": "nl",
+  "description": "Flashcard-studieapp",
+  "icons": [
+    {
+      "src": "/notQuizlet/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg"
+    },
+    {
+      "src": "/notQuizlet/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/notQuizlet/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "https://Ctrl-JS.github.io/notQuizlet/index.html?view=pwa",
+  "scope": "https://Ctrl-JS.github.io/notQuizlet",
+  "display": "standalone",
+  "orientation": "landscape",
+  "theme_color": "#284777",
+  "background-color": "#284777",
+  "shortcuts": [
+    {
+      "name": "Importeren",
+      "url": "https://Ctrl-JS.github.io/notQuizlet/import.html",
+      "description": "Set importeren",
+      "icons": [
+        {
+          "src": "/notQuizlet/img/maskable_add.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "/notQuizlet/img/add.svg",
+          "sizes": "any",
+          "type": "image/svg"
+        }
+      ]
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "https://Ctrl-JS.github.io/notQuizlet/index.html?view=pwa",
+      "accept": {
+        "application/json": [".json", ".quiz"]
+      },
+      "icons": [
+        {
+          "src": "/notQuizlet/img/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "multiple-clients"
+    }
+  ],
+  "handle_links": "preferred"
 }

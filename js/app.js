@@ -23,10 +23,12 @@ let quiz_mode = JSON.parse(localStorage.getItem('quiz-mode')) || {
   "ignoreParenthesis": false
 };
 let todo = [];
+let stats = [0, 0];
 let unsaved = false;
 const card_mode = {repeat:1,qTypes:[false,false,true],starOnly:false};
 const write_mode = {repeat:1,repeatMistake:"net",mistakePosition:"end",hints:false,qTypes:[true,false,false],writeOver:true,starOnly:false};
 const study_mode = {repeat:1,repeatMistake:"net",mistakePosition:"shift",hints:false,qTypes:[true,true,false],nextTypePosition:"shift",writeOver:true,starOnly:false};
+const progressBar = document.getElementById('progressBar');
 
 function fileHandler(file) {
   const reader = new FileReader();
@@ -70,7 +72,6 @@ function JSONHandler(json) {
   document.getElementById('editButton').style.display = 'flex';
 }
 
-//launch from file
 if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
   launchQueue.setConsumer((launchParams) => {
     if (!launchParams.files.length) {
@@ -245,6 +246,10 @@ function settingRow(title, text, type, current, values=[]) {
     '</div>'
 }
 
+function circularProgress(val) {
+  return '<svg viewBox="-54 -54 108 108" xmlns="http://www.w3.org/2000/svg" style="height:200px;width:200px;fill:none;stroke-width:4px;stroke-linecap:round;align-self:center"><circle r="50" style="fill:var(--bg-var);"></circle><path d="M 0 -50 A 50 50 0 '+(val>50&&val<100?'1':'0')+' '+(val<100?'1':'0')+' '+(Math.sin(Math.PI*val/50)*50)+' '+(-Math.cos(Math.PI*val/50)*50)+'" style="stroke:hsl('+1.2*val+' 100 50);"></path><text x="0" y="0" text-anchor="middle" dominant-baseline="middle" style="fill:var(--on-bg);">'+val+'%</text></svg>'
+}
+
 function submitMode(start=true) {
   quiz_mode.random = document.getElementById('WillekeurigSwitch').checked;
   quiz_mode.starOnly = document.getElementById('Enkel-met-sterSwitch').checked;
@@ -272,6 +277,17 @@ function hidePopUp(event) {
     popup.innerHTML = '';
     document.body.removeChild(popup);
   }
+}
+
+function overviewPopUp() {
+  const perc = (stats[1]<stats[0]?Math.round((1-stats[1]/stats[0])*100):0);
+  const content = '<h3>Leren voltooid! &#'+['129395', '127881', '129299', '129504', '128161'][getRandom(0,5)]+'</h3>'
+    +'<h5>Overzicht van deze oefensessie</h5>'
+    +'<p>Aantal kaarten geleerd: '+stats[0]+'</p>'
+    +'<p>Accuraatheid: '+perc+'%</p>'
+    +circularProgress(perc);
+  popup.innerHTML = "<div class='popup'><div style='display:flex;flex-direction:column;padding-bottom:3rem;min-width:20rem'>" + content + "</div><div class='settingRow' style='justify-content:flex-end;position:absolute;right:0;bottom:0'><button class='default-button' onclick='hidePopUp()'>Ok</button></div></div>";
+  document.body.appendChild(popup);
 }
 
 function smokeyCard(term, def, i) {
@@ -307,6 +323,8 @@ function hide() {
     .removeEventListener('keyup', handleKey);
   document.getElementById('chooserContent')
     .removeEventListener('keyup', handleNumberKey);
+  document.getElementById('writeOverInput')
+    .removeEventListener('keyup', handleKey);
   document.getElementById(page).style.display = 'none';
   document.getElementById('home').style.display = 'flex';
   page = 'home';
@@ -328,6 +346,8 @@ function show(linkedPage, resuming=false) {
       .addEventListener('click', flipCard);
     document.getElementById('chooserContent')
       .addEventListener('keyup', handleNumberKey);
+    document.getElementById('writeOverInput')
+      .addEventListener('keyup', handleKey);
     if (!resuming) {
       document.getElementById('progressBar')
         .max = todo.length * quiz_mode.qTypes.filter(Boolean).length;
@@ -413,6 +433,7 @@ function hideBottomPrompt() {
 
 function generator() {
   todo = [];
+  stats[1] = 0;
   const firstQType = quiz_mode.qTypes.findLastIndex((e) => e);
   const directionFactor = (quiz_mode.direction === 2 ? 1 : 0);
   for (let d = 0; d <= directionFactor; d++) {
@@ -421,6 +442,7 @@ function generator() {
       if (quiz_mode.starOnly) {
         iList = iList.filter(elem => quiz.cards[elem].star)
       }
+      stats[0] = iList.length;
       for (let i = 0; iList.length > 0; i++) {
         const newTodo = [
           iList.splice((quiz_mode.random ? getRandom(0, iList.length) : 0), 1)[0],
@@ -478,11 +500,10 @@ function nextLearnerQuestion() {
       switchLearnerContent('chooserContent');
       document.getElementById('chooserContent').focus();
     } else if (todo[0][3] === 3) { //writeOver
-      document.getElementById('learnerInput').value = '';
-      document.getElementById('learnerQuestion').innerHTML = quiz.cards[todo[0][0]][d ? "def" : "term"] + ":\n" + quiz.cards[todo[0][0]][d ? "term" : "def"];
-      document.getElementById('learnerHint').innerHTML = 'Schrijf het juiste antwoord over';
-      switchLearnerContent('learnerContent');
-      document.getElementById('learnerInput').focus();
+      document.getElementById('writeOverQuestion').innerHTML = quiz.cards[todo[0][0]][d?"def":"term"]+"\nJouw antwoord: "+document.getElementById('learnerInput').value+"\nJuiste antwoord: "+quiz.cards[todo[0][0]][d ? "term" : "def"];
+      document.getElementById('writeOverInput').value = '';
+      switchLearnerContent('writeOverContent');
+      document.getElementById('writeOverInput').focus();
     } else { //card
       const card = document.querySelector('.flashcard');
       card.innerHTML = q;
@@ -490,13 +511,12 @@ function nextLearnerQuestion() {
       card.focus();
     }
   } else {
+    overviewPopUp();
     hide();
-    alert("Proficiat!");
   }
 }
 
 function check() { //check answer
-  const progressBar = document.getElementById('progressBar');
   if (todo[0][3] === 0) { //write
     let answer = (todo[0][1] === 0 ? quiz.cards[todo[0][0]].term : quiz.cards[todo[0][0]].def).replaceAll('\n', ' ');
     let given = document.getElementById("learnerInput").value;
@@ -510,53 +530,14 @@ function check() { //check answer
     }
     answer = answer.trim().replace('  ', ' ');
     given = given.trim().replace('  ', ' ');
-    if (!quiz_mode.allAns) {answer = answer.split(/[/, ]+/)}
-    if (quiz_mode.allAns ? (given === answer) : (given.split(/[/, ]+/).every(s => answer.includes(s) || s === ''))) {
-      if (todo[0][2] > 0 && (quiz_mode.repeatMistake === "net" || quiz_mode.repeatMistake === "streak")) {
-        if (quiz_mode.mistakePosition === "direct") {
-          todo[0] = subtractMistake(todo[0]);
-        } else if (quiz_mode.mistakePosition === "shift") {
-          if (todo.length < 11) {
-            todo.splice(-1, 0, subtractMistake(todo.shift()));
-          } else {
-            const randIndex = getRandom(5, 10);
-            todo.splice(randIndex, 0, subtractMistake(todo[0]));
-            todo.shift();
-          }
-        }
-        if (quiz_mode.mistakePosition === "end") {
-          todo.push(subtractMistake(todo.shift()));
-        }
-        progressBar.max++;
-      } else {
-        todo.shift();
-      }
-      if (animationsOn) {
-        highlight();
-      }
-      progressBar.value++;
+    if (!quiz_mode.allAns) {answer = answer.split(/[/,]+/); given = given.split(/[/,]+/)}
+    if (quiz_mode.allAns ? (given === answer) : (given.every(s => answer.includes(s.trim()) || s==='') && !given.every(s => s===''))) {
+      afterRight();
     } else {
       if (quiz_mode.writeOver) {
-        todo.splice(1, 0, transformType(todo[0].slice(), -3));
-      }
-      if (quiz_mode.repeatMistake === "1" || quiz_mode.repeatMistake === "net" || quiz_mode.repeatMistake === "streak") {
-        if (quiz_mode.mistakePosition === "direct") {
-          todo[0] = addMistake(todo[0]);
-          if (quiz_mode.writeOver) {
-            todo.splice(1, 0, todo.shift())
-          }
-        } else if (quiz_mode.mistakePosition === "shift") {
-          if (todo.length < 11) {
-            todo.splice(-1, 0, addMistake(todo.shift()));
-          } else {
-            const randIndex = getRandom(5, 10);
-            todo.splice(randIndex, 0, addMistake(todo[0]));
-            todo.shift();
-          }
-        }
-        if (quiz_mode.mistakePosition === "end") {
-          todo.push(addMistake(todo.shift()));
-        }
+        todo.unshift(transformType(todo[0].slice(), -3));
+      } else {
+        afterWrong();
       }
       if (animationsOn) {
         highlight(false);
@@ -565,9 +546,9 @@ function check() { //check answer
   } else if (todo[0][3] === 1) { //choose
     alert('!check on choose');
   } else if (todo[0][3] === 3) { //writeOver
-    if (document.getElementById('learnerInput').value === (todo[0][1] === 0 ? quiz.cards[todo[0][0]].term : quiz.cards[todo[0][0]].def).replaceAll('\n', ' ')) {
+    if (document.getElementById('writeOverInput').value === (todo[0][1] === 0 ? quiz.cards[todo[0][0]].term : quiz.cards[todo[0][0]].def).replaceAll('\n', ' ')) {
       todo.shift();
-      nextLearnerQuestion();
+      afterWrong();
     }
   } else { //card
     if (animationsOn) {highlight()}
@@ -582,6 +563,57 @@ function check() { //check answer
   nextLearnerQuestion();
 }
 
+function afterWrong() {
+  if (quiz_mode.repeatMistake === "1" || quiz_mode.repeatMistake === "net" || quiz_mode.repeatMistake === "streak") {
+    if (quiz_mode.mistakePosition === "direct") {
+      todo[0] = addMistake(todo[0]);
+    } else if (quiz_mode.mistakePosition === "shift") {
+      if (todo.length < 11) {
+        todo.splice(-1, 0, addMistake(todo.shift()));
+      } else {
+        const randIndex = getRandom(5, 10);
+        todo.splice(randIndex, 0, addMistake(todo.shift()));
+      }
+    }
+    if (quiz_mode.mistakePosition === "end") {
+      todo.push(addMistake(todo.shift()));
+    }
+  }
+  stats[1]++;
+}
+
+function afterRight() {
+  if (todo[0][2] > 0 && (quiz_mode.repeatMistake === "net" || quiz_mode.repeatMistake === "streak")) {
+    if (quiz_mode.mistakePosition === "direct") {
+      todo[0] = subtractMistake(todo[0]);
+    } else if (quiz_mode.mistakePosition === "shift") {
+      if (todo.length < 11) {
+        todo.splice(-1, 0, subtractMistake(todo.shift()));
+      } else {
+        const randIndex = getRandom(5, 10);
+        todo.splice(randIndex, 0, subtractMistake(todo[0]));
+        todo.shift();
+      }
+    }
+    if (quiz_mode.mistakePosition === "end") {
+      todo.push(subtractMistake(todo.shift()));
+    }
+    progressBar.max++;
+  } else {
+    todo.shift();
+  }
+  if (animationsOn) {
+    highlight();
+  }
+  progressBar.value++;
+}
+
+function ignoreMistake () {
+  todo.shift();
+  afterRight();
+  nextLearnerQuestion();
+}
+
 function flipCard() {
   const card = document.querySelector('.flashcard');
   card.style.transform = (animationsOn ? "rotateX(90deg)" : "none");
@@ -593,7 +625,6 @@ function flipCard() {
 }
 
 function choose(node) {
-  const progressBar = document.getElementById('progressBar');
   if (node.dataset.correct === "true") { //correct
     if (quiz_mode.qTypes[0]) {
       toPosition(transformType(todo[0], 1), quiz_mode.nextTypePosition);
@@ -603,6 +634,7 @@ function choose(node) {
     todo.shift();
     nextLearnerQuestion();
   } else { //wrong
+    stats[1]++;
     toPosition(addMistake(todo[0]), quiz_mode.mistakePosition);
     if (animationsOn) {highlight(false)}
     todo.shift();
@@ -650,7 +682,7 @@ function changes() {
     window.addEventListener('beforeunload', (e) => {
       if (unsaved) {
         e.preventDefault();
-        bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', saveFile(quiz), "Downloaden")
+        bottomPrompt('Niet gedownloade wijzigingen in .quiz-bestand. Wijzigingen downloaden naar lokaal bestand?', function () {saveFile(quiz)}, "Downloaden")
       }
     })
   }

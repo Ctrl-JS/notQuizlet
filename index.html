@@ -4,14 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Unshittified Quizlet</title>
+  <title>nQ Learner</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/compress.css">
-  <meta name="description" content="Unshittified Quizlet">
-  <link rel="icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg" sizes="any">
-  <link rel="icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="https://ctrl-js.github.io/notQuizlet/img/icon.svg">
-  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="nQ Learner">
+  <link rel="icon" href="/notQuizlet/img/icon.svg" sizes="any" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/notQuizlet/img/icon.svg">
+  <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#284777">
 </head>
 
@@ -128,6 +127,15 @@
         </button>
       </div>
     </div>
+    <div id="writeOverContent" class="learnerContent">
+      <p id="writeOverQuestion">Vraag</p>
+      <div class="input-box">
+        <input id="writeOverInput" type="text" autocomplete="off" tabindex="0" spellcheck="false" required/>
+        <label id="writeOverHint" for="writeOverInput">Typ het juiste antwoord over</label>
+        <button id="writeOverIgnoreBtn" class="default-button second-button" onclick="ignoreMistake()" title="Fout negeren; ik had het juist">Fout negeren</button>
+        <button id="writeOverButton" class="default-button" onclick="check()" title="Antwoord indienen">Antwoorden</button>
+      </div>
+    </div>
     <progress id="progressBar" value="0" max="100"></progress>
   </div>
   <div id="settings" class="appBody" style="display: none">
@@ -148,7 +156,7 @@
       <div class="settingRow">
         <div class="column">
           <h3 class="settingText">Info</h3>
-          <p class="settingText">Versie: 0.0.7</p>
+          <p class="settingText">Versie: 0.0.8</p>
         </div>
       </div>
     </div>

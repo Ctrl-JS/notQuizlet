@@ -1,7 +1,6 @@
-const VERSION = "0.0.7";
+const VERSION = "0.0.8";
 const CACHE_NAME = `quiz-cache-${VERSION}`;
 const APP_STATIC_RES = [
-  "/notQuizlet/",
   "/notQuizlet/index.html",
   "/notQuizlet/compress.css",
   "/notQuizlet/import.css",
@@ -35,7 +34,9 @@ self.addEventListener('install', function (event) {
     caches.open(CACHE_NAME)
       .then(function (cache) {
         console.log('Opened cache');
-        return cache.addAll(APP_STATIC_RES);
+        APP_STATIC_RES.forEach((item) => {
+          cache.add(item).catch(console.error);
+        });
       })
   );
   return self.skipWaiting();
